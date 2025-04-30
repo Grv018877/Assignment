@@ -1,0 +1,121 @@
+﻿<UserControl x:Class="Assignment_gamanet.UI.Panel.MainPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Assignment_gamanet.UI.Panel"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:common="clr-namespace:Assignment_gamanet.Common"
+             xmlns:behaviors="clr-namespace:Assignment_gamanet.UI.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=local:MainPanelViewModel}">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="sortOptions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="common:SortByOptions"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource HoverListViewItemStyle}"/>
+
+        <Style TargetType="TextBlock" x:Key="DefaultTextBlockStyle">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="NameTextBoxStyle">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Style="{StaticResource NameTextBoxStyle}"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox" x:Key="ModernComboBoxStyle">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource SecondaryBrush}" />
+            <Setter Property="Padding" Value="4"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="RootContainer" Background="{StaticResource AccentBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource NameTextBoxStyle }" VerticalAlignment="Center" Margin="5,0">Sort By:</TextBlock>
+            <ComboBox Grid.Column="1" Style="{StaticResource ModernComboBoxStyle}" 
+                      ItemsSource="{Binding Source={StaticResource sortOptions }}" 
+                      SelectedItem="{Binding SelectedSortOption,Mode=TwoWay}" Width="150"/>
+        </Grid>
+
+        <Grid HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource NameTextBoxStyle }" VerticalAlignment="Center" Margin="5,0">Filter By Country:</TextBlock>
+            <ComboBox Grid.Column="1" x:Name="CountryComboBox"
+                      Width="200"
+                      Style="{StaticResource ModernComboBoxStyle}"
+                      ItemsSource="{Binding Countries}" 
+                      StaysOpenOnEdit="True" 
+                      IsEditable="False">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                            <Label Content="{Binding Name}" Padding="0" Width="180"/>
+                        </CheckBox>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+                <i:Interaction.Behaviors>
+                    <behaviors:ComboBoxAutoResetBehavior />
+                </i:Interaction.Behaviors>
+            </ComboBox>
+        </Grid>
+
+        <ListView Grid.Row="1" ItemsSource="{Binding PersonsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Label Width="200" BorderBrush="{StaticResource SecondaryBrush}" BorderThickness="1" Background="{StaticResource AccentBrush}">
+                        <Border Padding="5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" />
+                                <TextBlock Grid.Row="1" Text="{Binding Country}" Foreground="{StaticResource TextBrush}" />
+                                <TextBlock Grid.Row="2" Text="{Binding Phone}" Foreground="{StaticResource MutedTextBrush}" />
+                            </Grid>
+                        </Border>
+                    </Label>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <TextBlock Grid.Row="2" HorizontalAlignment="Right" Text="Assignement By: Gaurav Shukla (shukla.Gaurava@gmail.com)" 
+                   Opacity=".6" Foreground="{StaticResource MutedTextBrush}" FontSize="10" Margin="5"/>
+    </Grid>
+</UserControl>
